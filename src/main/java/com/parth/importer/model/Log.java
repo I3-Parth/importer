@@ -7,7 +7,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class log {
+public class Log {
     private Long id;
     private Long studentId;
     private String name;
