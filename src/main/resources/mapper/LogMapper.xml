@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.parth.importer.repository.logRepository">
+<mapper namespace="com.parth.importer.repository.LogRepository">
     <resultMap id="LogResultMap" type="com.parth.importer.model.Log" >
         <id property="id" column="id" />
         <result property="studentId" column="student_id" />
@@ -17,7 +17,7 @@
         select * from log
     </select>
 
-    <insert id="addLogs" parameterType="map" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
+    <insert id="addLogs" parameterType="map" >
         insert into log (student_id, name, age, email, city, status_code, status_message)
         values (#{student.id}, #{student.name}, #{student.age}, #{student.email}, #{student.city}, #{statusCode}, #{statusMessage})
     </insert>
