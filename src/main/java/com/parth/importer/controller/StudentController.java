@@ -4,6 +4,7 @@ import com.parth.importer.dto.LogDisplayDto;
 import com.parth.importer.dto.StudentAdditionDto;
 import com.parth.importer.dto.StudentDisplayDto;
 import com.parth.importer.model.StudentEntity;
+import com.parth.importer.services.DummyService;
 import com.parth.importer.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -24,9 +25,12 @@ public class StudentController {
     @Autowired
     StudentService studentService;
 
+    @Autowired
+    DummyService dummyService;
+
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ROLE_OFFICE_ADMIN')")
-    public List<LogDisplayDto> addStudents(@Valid @RequestBody List<StudentAdditionDto> studentAdditionDtos, @RequestHeader("Authorization") String token){
-        return studentService.addDummyLogs(studentAdditionDtos);
+    public List<StudentEntity> addStudents(@Valid @RequestBody List<StudentAdditionDto> studentAdditionDtos, @RequestHeader("Authorization") String token){
+        return dummyService.dummyServiceCall(studentAdditionDtos, token);
     }
 }
