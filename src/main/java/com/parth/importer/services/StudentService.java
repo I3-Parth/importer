@@ -26,6 +26,7 @@ public class StudentService {
 
     private static String POST_STUDENTS_URL = "http://localhost:8081/students";
 
+    @Transactional
     public List<LogDisplayDto> addStudents(List<StudentAdditionDto> studentAdditionDtos, String token) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", token);
@@ -47,22 +48,4 @@ public class StudentService {
         }
         return logDisplayDtos;
     }
-
-    public List<LogDisplayDto> addDummyLogs(List<StudentAdditionDto> studentAdditionDtos) {
-        return addLog(studentAdditionDtos);
-    }
-
-    @Transactional
-    public List<LogDisplayDto> addLog(List<StudentAdditionDto> studentAdditionDtos) {
-        Log log;
-        List<LogDisplayDto> logDisplayDtos = new ArrayList<>();
-        for (StudentAdditionDto studentAdditionDto : studentAdditionDtos) {
-            StudentEntity studentEntity = new StudentEntity(studentAdditionDto.getName(), studentAdditionDto.getAge(), studentAdditionDto.getEmail(), studentAdditionDto.getCity());
-            log = logMapper.convertDataToLogEntity(studentEntity, 200L, "OK");
-            logRepository.addLogs(log);
-            logDisplayDtos.add(logMapper.convertLogEntityToLogDisplayDto(log));
-        }
-        return logDisplayDtos;
-    }
-
 }
