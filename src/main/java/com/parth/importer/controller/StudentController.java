@@ -2,7 +2,10 @@ package com.parth.importer.controller;
 
 import com.parth.importer.dto.StudentAdditionDto;
 import com.parth.importer.model.StudentEntity;
+import com.parth.importer.services.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,19 +18,12 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentController {
 
-    private static String POST_STUDENTS_URL = "http://localhost:8081/students";
+    @Autowired
+    StudentService studentService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ROLE_OFFICE_ADMIN')")
     public List<StudentEntity> addStudents(@RequestBody List<StudentAdditionDto> studentAdditionDtos, @RequestHeader("Authorization") String token){
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", token);
-
-        List<StudentEntity> res = new ArrayList<>();
-        for (StudentAdditionDto studentAdditionDto: studentAdditionDtos){
-            HttpEntity<StudentAdditionDto> requestEntity = new HttpEntity<>(studentAdditionDto, httpHeaders);
-            res.add(new RestTemplate().exchange(POST_STUDENTS_URL, HttpMethod.POST, requestEntity, StudentEntity.class).getBody());
-        }
-
-        return res;
+        return studentService.addStudents(studentAdditionDtos, token);
     }
 }
