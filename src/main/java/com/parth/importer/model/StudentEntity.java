@@ -17,4 +17,10 @@ public class StudentEntity {
   private String email;
   private String city;
 
+  public StudentEntity(String name, int age, String email, String city) {
+    this.name = name;
+    this.age = age;
+    this.email = email;
+    this.city = city;
+  }
 }

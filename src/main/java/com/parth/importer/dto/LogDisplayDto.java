@@ -1,18 +1,11 @@
-package com.parth.importer.model;
+package com.parth.importer.dto;
 
-import lombok.*;
-
-import javax.validation.constraints.NotNull;
+import lombok.Data;
 
 @Data
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class Log {
+public class LogDisplayDto {
     private Long id;
     private Long studentId;
-    @NotNull
     private String name;
     private int age;
     private String email;

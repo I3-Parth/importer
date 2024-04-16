@@ -7,6 +7,6 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface LogRepository {
-    boolean addLogs(@Param("student") StudentEntity studentEntity,@Param("statusCode") Long statusCode,@Param("statusMessage") String statusMessage);
+    void addLogs(Log log);
     Log getAllLogs();
 }
