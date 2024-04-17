@@ -32,7 +32,7 @@ public class StudentService {
 
     public List<LogDisplayDto> addStudents(List<StudentAdditionDto> studentAdditionDtos, String token) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("Authorization", token);
+        httpHeaders.set("Authorization", "Bearer " + token);
 
         List<LogDisplayDto> logDisplayDtos = new ArrayList<>();
         Log log;
