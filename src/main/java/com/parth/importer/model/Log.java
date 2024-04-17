@@ -11,8 +11,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class Log {
     private Long id;
-    private Long studentId;
-    @NotNull
     private String name;
     private int age;
     private String email;

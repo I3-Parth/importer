@@ -4,7 +4,6 @@
 <mapper namespace="com.parth.importer.repository.LogRepository">
     <resultMap id="LogResultMap" type="com.parth.importer.model.Log" >
         <id property="id" column="id" />
-        <result property="studentId" column="student_id" />
         <result property="name" column="name" />
         <result property="age" column="age" />
         <result property="email" column="email" />
@@ -17,8 +16,8 @@
         select * from log
     </select>
 
-    <insert id="addLogs" parameterType="com.parth.importer.model.Log" >
-        insert into log (student_id, name, age, email, city, status_code, status_message)
-        values (#{studentId}, #{name}, #{age}, #{email}, #{city}, #{statusCode}, #{statusMessage})
+    <insert id="addLogs" parameterType="com.parth.importer.model.Log" keyColumn="id" keyProperty="id">
+        insert into log (name, age, email, city, status_code, status_message)
+        values (#{name}, #{age}, #{email}, #{city}, #{statusCode}, #{statusMessage})
     </insert>
 </mapper>
