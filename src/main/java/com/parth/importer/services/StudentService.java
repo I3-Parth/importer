@@ -8,6 +8,8 @@ import com.parth.importer.model.LogEntity;
 import com.parth.importer.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -19,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class StudentService {
@@ -28,6 +31,9 @@ public class StudentService {
 
     @Autowired
     LogMapper logMapper;
+
+    @Autowired
+    KafkaTemplate<String, Object> template;
 
     private static String POST_STUDENTS_URL = "http://localhost:8081/students";
 
@@ -74,4 +80,13 @@ public class StudentService {
         }
         return token;
     }
+
+    public void sendStudentsToTopic(List<StudentAdditionDto> studentAdditionDtos){
+        CompletableFuture<SendResult<String, Object>> send = template.send("student-info", studentAdditionDtos);
+        send.whenComplete((result, ex) -> {
+            if (ex == null) System.out.println("Sent Student data: " + studentAdditionDtos.toString() + "\n with offset: " + result.getRecordMetadata().offset());
+            else System.out.println("Unable to send data due to " + ex.getMessage());
+        });
+    }
+
 }
