@@ -2,6 +2,7 @@ package com.parth.importer.controller;
 
 import com.parth.importer.dto.LogDisplayDto;
 import com.parth.importer.dto.StudentAdditionDto;
+import com.parth.importer.dto.StudentDisplayDto;
 import com.parth.importer.services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +23,7 @@ public class StudentController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ROLE_OFFICE_ADMIN')")
-    public void addStudents(@Valid @RequestBody List<StudentAdditionDto> studentAdditionDtos){
-        studentService.sendStudentsToTopic(studentAdditionDtos);
+    public List<StudentDisplayDto> addStudents(@Valid @RequestBody List<StudentAdditionDto> studentAdditionDtos){
+        return studentService.sendStudentsToTopic(studentAdditionDtos);
     }
 }

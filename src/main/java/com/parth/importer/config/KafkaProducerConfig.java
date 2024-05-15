@@ -1,5 +1,6 @@
 package com.parth.importer.config;
 
+import com.parth.importer.dto.StudentAdditionDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -31,16 +32,17 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,"localhost:9092");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         return props;
     }
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory(){
+    public ProducerFactory<String, StudentAdditionDto> producerFactory(){
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate(){
+    public KafkaTemplate<String, StudentAdditionDto> kafkaTemplate(){
         return new KafkaTemplate<>(producerFactory());
     }
 }

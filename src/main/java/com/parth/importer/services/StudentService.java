@@ -4,6 +4,7 @@ import com.parth.importer.dto.LogDisplayDto;
 import com.parth.importer.dto.StudentAdditionDto;
 import com.parth.importer.dto.StudentDisplayDto;
 import com.parth.importer.mapstructMapper.LogMapper;
+import com.parth.importer.mapstructMapper.StudentMapper;
 import com.parth.importer.model.LogEntity;
 import com.parth.importer.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,10 @@ public class StudentService {
     LogMapper logMapper;
 
     @Autowired
-    KafkaTemplate<String, Object> template;
+    StudentMapper studentMapper;
+
+    @Autowired
+    KafkaTemplate<String, StudentAdditionDto> template;
 
     private static String POST_STUDENTS_URL = "http://localhost:8081/students";
 
@@ -81,12 +85,19 @@ public class StudentService {
         return token;
     }
 
-    public void sendStudentsToTopic(List<StudentAdditionDto> studentAdditionDtos){
-        CompletableFuture<SendResult<String, Object>> send = template.send("student-info", studentAdditionDtos);
-        send.whenComplete((result, ex) -> {
-            if (ex == null) System.out.println("Sent Student data: " + studentAdditionDtos.toString() + "\n with offset: " + result.getRecordMetadata().offset());
-            else System.out.println("Unable to send data due to " + ex.getMessage());
-        });
+    public List<StudentDisplayDto> sendStudentsToTopic(List<StudentAdditionDto> studentAdditionDtos){
+        List<StudentDisplayDto> studentDisplayDtos = new ArrayList<>();
+         for (StudentAdditionDto studentAdditionDto: studentAdditionDtos){
+            CompletableFuture<SendResult<String, StudentAdditionDto>> send = template.send("student-info", studentAdditionDto);
+            send.whenComplete((result, ex) -> {
+                if (ex == null) {
+                    System.out.println("Sent Student data: " + studentAdditionDtos.toString() + "\n with offset: " + result.getRecordMetadata().offset());
+                    studentDisplayDtos.add(studentMapper.convertStudentAdditionDtoToStudentDisplayDto(studentAdditionDto));
+                }
+                else System.out.println("Unable to send data due to " + ex.getMessage());
+            });
+        }
+        return studentDisplayDtos;
     }
 
 }
