@@ -9,6 +9,10 @@ import com.parth.importer.repository.LogRepository;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -30,8 +34,9 @@ public class StudentService {
 
     private static String POST_STUDENTS_URL = "http://localhost:8081/students";
 
-    public List<LogDisplayDto> addStudents(List<StudentAdditionDto> studentAdditionDtos, String token) {
+    public List<LogDisplayDto> addStudents(List<StudentAdditionDto> studentAdditionDtos) {
         HttpHeaders httpHeaders = new HttpHeaders();
+        String token = getToken();
         httpHeaders.set("Authorization", "Bearer " + token);
 
         List<LogDisplayDto> logDisplayDtos = new ArrayList<>();
@@ -57,5 +62,19 @@ public class StudentService {
             }
         }
         return logDisplayDtos;
+    }
+
+    private String getToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        String token = "";
+
+        if (principal instanceof Jwt) {
+            Jwt jwt = (Jwt) principal;
+            token = jwt.getTokenValue();
+        } else {
+            throw new InvalidBearerTokenException("Invalid Bearer token exception!");
+        }
+        return token;
     }
 }
