@@ -2,8 +2,7 @@ package com.parth.importer.mapstructMapper;
 
 import com.parth.importer.dto.LogDisplayDto;
 import com.parth.importer.dto.StudentAdditionDto;
-import com.parth.importer.dto.StudentDisplayDto;
-import com.parth.importer.model.Log;
+import com.parth.importer.model.LogEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,7 +15,7 @@ public interface LogMapper {
     @Mapping(source = "city", target = "city")
     @Mapping(source = "statusCode", target = "statusCode")
     @Mapping(source = "statusMessage", target = "statusMessage")
-    LogDisplayDto convertLogEntityToLogDisplayDto(Log log);
+    LogDisplayDto convertLogEntityToLogDisplayDto(LogEntity logEntity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(source = "studentAdditionDto.name", target = "name")
@@ -25,5 +24,5 @@ public interface LogMapper {
     @Mapping(source = "studentAdditionDto.city", target = "city")
     @Mapping(source = "statusCode", target = "statusCode")
     @Mapping(source = "statusMessage", target = "statusMessage")
-    Log convertDataToLogEntity(StudentAdditionDto studentAdditionDto, Long statusCode, String statusMessage);
+    LogEntity convertDataToLogEntity(StudentAdditionDto studentAdditionDto, Long statusCode, String statusMessage);
 }

@@ -2,14 +2,12 @@ package com.parth.importer.model;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
-
 @Data
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Log {
+public class LogEntity {
     private Long id;
     private String name;
     private int age;

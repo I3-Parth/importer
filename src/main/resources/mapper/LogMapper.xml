@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.parth.importer.repository.LogRepository">
-    <resultMap id="LogResultMap" type="com.parth.importer.model.Log" >
+    <resultMap id="LogResultMap" type="com.parth.importer.model.LogEntity" >
         <id property="id" column="id" />
         <result property="name" column="name" />
         <result property="age" column="age" />
@@ -13,11 +13,11 @@
     </resultMap>
 
     <select id="getAllLogs" resultMap="LogResultMap" >
-        select * from log
+        select * from logEntity
     </select>
 
-    <insert id="addLogs" parameterType="com.parth.importer.model.Log" keyColumn="id" keyProperty="id">
-        insert into log (name, age, email, city, status_code, status_message)
+    <insert id="addLogs" parameterType="com.parth.importer.model.LogEntity" keyColumn="id" keyProperty="id">
+        insert into logEntity (name, age, email, city, status_code, status_message)
         values (#{name}, #{age}, #{email}, #{city}, #{statusCode}, #{statusMessage})
     </insert>
 </mapper>
