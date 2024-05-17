@@ -8,6 +8,7 @@ import com.parth.importer.mapstructMapper.StudentMapper;
 import com.parth.importer.model.LogEntity;
 import com.parth.importer.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -38,6 +39,9 @@ public class StudentService {
 
     @Autowired
     KafkaTemplate<String, StudentAdditionDto> template;
+
+    @Value("${topic.student-info1}")
+    private String topic;
 
     private static String POST_STUDENTS_URL = "http://localhost:8081/students";
 
@@ -88,7 +92,7 @@ public class StudentService {
     public List<StudentDisplayDto> sendStudentsToTopic(List<StudentAdditionDto> studentAdditionDtos){
         List<StudentDisplayDto> studentDisplayDtos = new ArrayList<>();
          for (StudentAdditionDto studentAdditionDto: studentAdditionDtos){
-            CompletableFuture<SendResult<String, StudentAdditionDto>> send = template.send("student-info", studentAdditionDto);
+            CompletableFuture<SendResult<String, StudentAdditionDto>> send = template.send(topic, studentAdditionDto);
             send.whenComplete((result, ex) -> {
                 if (ex == null) {
                     System.out.println("Sent Student data: " + studentAdditionDtos.toString() + "\n with offset: " + result.getRecordMetadata().offset());
