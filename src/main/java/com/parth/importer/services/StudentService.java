@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class StudentService {
+public class    StudentService {
 
     @Autowired
     LogRepository logRepository;
