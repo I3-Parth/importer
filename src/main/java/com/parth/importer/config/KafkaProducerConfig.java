@@ -1,6 +1,7 @@
 package com.parth.importer.config;
 
 import com.parth.importer.dto.StudentAdditionDto;
+import com.parth.importer.dto.StudentAdditionSendDto;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -33,17 +34,16 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
         props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
-        props.put(ProducerConfig.ACKS_CONFIG,"all");
         return props;
     }
 
     @Bean
-    public ProducerFactory<String, StudentAdditionDto> producerFactory(){
+    public ProducerFactory<String, StudentAdditionSendDto> producerFactory(){
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     @Bean
-    public KafkaTemplate<String, StudentAdditionDto> kafkaTemplate(){
+    public KafkaTemplate<String, StudentAdditionSendDto> kafkaTemplate(){
         return new KafkaTemplate<>(producerFactory());
     }
 }

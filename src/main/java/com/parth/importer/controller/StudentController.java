@@ -23,7 +23,7 @@ public class StudentController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ROLE_OFFICE_ADMIN')")
-    public List<StudentDisplayDto> addStudents(@Valid @RequestBody List<StudentAdditionDto> studentAdditionDtos){
-        return studentService.sendStudentsToTopic(studentAdditionDtos);
+    public List<LogDisplayDto> addStudents(@Valid @RequestBody List<StudentAdditionDto> studentAdditionDtos){
+        return studentService.addStudentsToLogEntityAndSendToTopic(studentAdditionDtos);
     }
 }

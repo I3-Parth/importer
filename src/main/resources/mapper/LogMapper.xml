@@ -16,8 +16,12 @@
         select * from logEntity
     </select>
 
-    <insert id="addLogs" parameterType="com.parth.importer.model.LogEntity" keyColumn="id" keyProperty="id">
+    <insert id="addLog" parameterType="com.parth.importer.model.LogEntity" keyColumn="id" keyProperty="id" useGeneratedKeys="true" >
         insert into logEntity (name, age, email, city, status_code, status_message)
         values (#{name}, #{age}, #{email}, #{city}, #{statusCode}, #{statusMessage})
     </insert>
+
+    <update id="updateLog" parameterType="map" >
+        update logEntity SET status_code = #{statusCode}, status_message = #{statusMessage} WHERE id = #{logId}
+    </update>
 </mapper>

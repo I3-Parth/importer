@@ -34,7 +34,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, AcknowledgmentDTO> ackConsumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(acknowledgmentConfig(), new StringDeserializer(), new JsonDeserializer<>(AcknowledgmentDTO.class));
+        return new DefaultKafkaConsumerFactory<>(acknowledgmentConfig(), new StringDeserializer(), new JsonDeserializer<>(AcknowledgmentDTO.class, false));
     }
 
     @Bean
