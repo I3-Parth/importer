@@ -6,9 +6,11 @@ import com.parth.importer.model.LogEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
-public interface LogMapper {
+import java.util.List;
 
+@Mapper(componentModel = "spring", uses = StudentMapper.class)
+public interface LogMapper {
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "name", target = "name")
     @Mapping(source = "age", target = "age")
     @Mapping(source = "email", target = "email")
@@ -17,7 +19,8 @@ public interface LogMapper {
     @Mapping(source = "statusMessage", target = "statusMessage")
     LogDisplayDto convertLogEntityToLogDisplayDto(LogEntity logEntity);
 
-    @Mapping(target = "id", ignore = true)
+    List<LogDisplayDto> convertListOfLogEntitiesToListOfLogDisplayDtos(List<LogEntity> logEntities);
+
     @Mapping(source = "studentAdditionDto.name", target = "name")
     @Mapping(source = "studentAdditionDto.age", target = "age")
     @Mapping(source = "studentAdditionDto.email", target = "email")
@@ -25,4 +28,5 @@ public interface LogMapper {
     @Mapping(source = "statusCode", target = "statusCode")
     @Mapping(source = "statusMessage", target = "statusMessage")
     LogEntity convertDataToLogEntity(StudentAdditionDto studentAdditionDto, Long statusCode, String statusMessage);
+
 }

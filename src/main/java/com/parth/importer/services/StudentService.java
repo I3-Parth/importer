@@ -2,12 +2,17 @@ package com.parth.importer.services;
 
 import com.parth.importer.dto.LogDisplayDto;
 import com.parth.importer.dto.StudentAdditionDto;
+import com.parth.importer.dto.StudentAdditionSendDto;
 import com.parth.importer.dto.StudentDisplayDto;
 import com.parth.importer.mapstructMapper.LogMapper;
+import com.parth.importer.mapstructMapper.StudentMapper;
 import com.parth.importer.model.LogEntity;
 import com.parth.importer.repository.LogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -19,15 +24,25 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
-public class StudentService {
+public class    StudentService {
 
     @Autowired
     LogRepository logRepository;
 
     @Autowired
     LogMapper logMapper;
+
+    @Autowired
+    StudentMapper studentMapper;
+
+    @Autowired
+    KafkaTemplate<String, StudentAdditionSendDto> template;
+
+    @Value("${topic.student-info1}")
+    private String topic;
 
     private static String POST_STUDENTS_URL = "http://localhost:8081/students";
 
@@ -74,4 +89,43 @@ public class StudentService {
         }
         return token;
     }
+
+//    public List<StudentDisplayDto> sendStudentsToTopic(List<StudentAdditionDto> studentAdditionDtos){
+//        List<StudentDisplayDto> studentDisplayDtos = new ArrayList<>();
+//         for (StudentAdditionDto studentAdditionDto: studentAdditionDtos){
+//            CompletableFuture<SendResult<String, StudentAdditionDto>> send = template.send(topic, studentAdditionDto);
+//            send.whenComplete((result, ex) -> {
+//                if (ex == null) {
+//                    System.out.println("Sent Student data: " + studentAdditionDtos.toString() + "\n with offset: " + result.getRecordMetadata().offset());
+//                    studentDisplayDtos.add(studentMapper.convertStudentAdditionDtoToStudentDisplayDto(studentAdditionDto));
+//                }
+//                else System.out.println("Unable to send data due to " + ex.getMessage());
+//            });
+//        }
+//        return studentDisplayDtos;
+//    }
+
+    public List<LogDisplayDto> addStudentsToLogEntityAndSendToTopic(List<StudentAdditionDto> studentAdditionDtos){
+        List<LogEntity> logEntities = new ArrayList<>();
+
+        for (StudentAdditionDto studentAdditionDto: studentAdditionDtos){
+
+            LogEntity logEntity = logMapper.convertDataToLogEntity(studentAdditionDto, (long) HttpStatus.ACCEPTED.value(), HttpStatus.ACCEPTED.getReasonPhrase());
+            logRepository.addLog(logEntity);
+            logEntities.add(logEntity);
+
+            StudentAdditionSendDto studentAdditionSendDto = studentMapper.convertLogEntityToStudentAdditionSendDto(logEntity);
+
+            CompletableFuture<SendResult<String, StudentAdditionSendDto>> send = template.send(topic, studentAdditionSendDto);
+            send.whenComplete((result, ex) -> {
+                if (ex == null) {
+                    System.out.println("Sent Student data: " + studentAdditionDtos.toString() + "\n with offset: " + result.getRecordMetadata().offset());
+                }
+                else System.out.println("Unable to send data due to " + ex.getMessage());
+            });
+        }
+
+        return logMapper.convertListOfLogEntitiesToListOfLogDisplayDtos(logEntities);
+    }
+
 }
